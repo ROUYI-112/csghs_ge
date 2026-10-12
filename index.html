@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>聚落交通中地闖關</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: 一次一張卡的闖關流程，上方是關卡地圖，下方是單張學習／答題卡 */
+:root{
+  --bg:#eef3f6; --card:#ffffff; --ink:#18303d; --soft:#5b7280; --line:#d3dee5;
+  --accent:#0f7a6c; --accent-ink:#ffffff; --hl:#ffd84d; --hl-ink:#3a2e00;
+  --ok:#1f8a4c; --ok-bg:#e3f5ea; --ng:#c0392b; --ng-bg:#fbe7e4;
+  --a:#2f6fd0; --a-bg:#e4edfb; --b:#c2620a; --b-bg:#fcecdc;
+  --font:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12191d; --card:#1c252b; --ink:#e7eef2; --soft:#9fb2bd; --line:#2e3b43;
+  --accent:#3fc1ab; --accent-ink:#0c1a17; --hl:#e8c33a; --hl-ink:#231c00;
+  --ok:#5fd18e; --ok-bg:#16301f; --ng:#ff8a7a; --ng-bg:#3a1c18;
+  --a:#7aa8f0; --a-bg:#1a2a44; --b:#f0a35c; --b-bg:#3a2714; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12191d; --card:#1c252b; --ink:#e7eef2; --soft:#9fb2bd; --line:#2e3b43;
+  --accent:#3fc1ab; --accent-ink:#0c1a17; --hl:#e8c33a; --hl-ink:#231c00;
+  --ok:#5fd18e; --ok-bg:#16301f; --ng:#ff8a7a; --ng-bg:#3a1c18;
+  --a:#7aa8f0; --a-bg:#1a2a44; --b:#f0a35c; --b-bg:#3a2714; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:18px;line-height:1.7}
+.wrap{max-width:640px;margin:0 auto;padding-inline:16px;padding-block:20px 48px;display:flex;flex-direction:column;gap:16px}
+header h1{font-size:1.35rem;font-weight:900;margin:0;text-wrap:balance}
+header p{margin:2px 0 0;color:var(--soft);font-size:.9rem}
+.map{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.stop{border:2px solid var(--line);background:var(--card);color:var(--soft);border-radius:12px;padding:6px 2px;font:inherit;font-size:.75rem;line-height:1.3;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0}
+.stop b{font-size:1.05rem;color:var(--ink)}
+.stop.on{border-color:var(--accent);background:var(--accent);color:var(--accent-ink)}
+.stop.on b{color:var(--accent-ink)}
+.stop.done:not(.on){border-color:var(--ok)}
+.stop.done:not(.on) b::after{content:" ✓";color:var(--ok)}
+.stop:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--hl);outline-offset:2px}
+.bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 20px;display:flex;flex-direction:column;gap:14px;min-height:300px}
+.tag{font-size:.78rem;letter-spacing:.08em;color:var(--accent);font-weight:700}
+.card h2{font-size:1.4rem;font-weight:900;margin:0;line-height:1.35;text-wrap:balance}
+.card p{margin:0}
+.big{font-size:1.15rem}
+mark{background:var(--hl);color:var(--hl-ink);padding:0 4px;border-radius:4px;font-weight:700}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.side{border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.side.a{background:var(--a-bg)} .side.b{background:var(--b-bg)}
+.side h3{margin:0;font-size:1.1rem}
+.side.a h3{color:var(--a)} .side.b h3{color:var(--b)}
+.side p{font-size:.95rem}
+.chain{display:flex;flex-direction:column;gap:6px}
+.chain div{background:var(--bg);border-radius:12px;padding:10px 12px;font-weight:700}
+.chain span{text-align:center;color:var(--accent);font-weight:900}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{font:inherit;text-align:left;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:12px 14px;cursor:pointer}
+.opt:hover{border-color:var(--accent)}
+.opt.right{border-color:var(--ok);background:var(--ok-bg)}
+.opt.wrong{border-color:var(--ng);background:var(--ng-bg)}
+.opt[disabled]{cursor:default}
+.two{flex-direction:row}
+.two .opt{flex:1;text-align:center;font-weight:700}
+.two .opt.pa{color:var(--a)} .two .opt.pb{color:var(--b)}
+.fb{border-radius:12px;padding:12px 14px;font-size:1rem}
+.fb.ok{background:var(--ok-bg)} .fb.ng{background:var(--ng-bg)}
+.fb b{display:block;margin-bottom:2px}
+.ok-t{color:var(--ok)} .ng-t{color:var(--ng)}
+.nav{display:flex;gap:10px;justify-content:space-between}
+.btn{font:inherit;font-weight:700;border-radius:12px;padding:12px 20px;cursor:pointer;border:2px solid var(--line);background:var(--card);color:var(--ink)}
+.btn.go{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);flex:1}
+.btn[disabled]{opacity:.4;cursor:default}
+.slider{display:flex;flex-direction:column;gap:10px}
+.slider input{width:100%;accent-color:var(--accent)}
+.km{font-size:2rem;font-weight:900;font-variant-numeric:tabular-nums}
+.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.mode{border:2px solid var(--line);border-radius:12px;padding:10px 6px;text-align:center;color:var(--soft);transition:all .2s}
+.mode b{display:block;font-size:1.1rem}
+.mode.win{border-color:var(--accent);background:var(--accent);color:var(--accent-ink)}
+.tip{border-left:5px solid var(--hl);background:var(--bg);padding:10px 12px;border-radius:0 10px 10px 0;font-size:1rem}
+.score{font-size:3rem;font-weight:900;color:var(--accent);font-variant-numeric:tabular-nums}
+.small{font-size:.9rem;color:var(--soft)}
+@media (max-width:420px){.pair{grid-template-columns:1fr}.stop{font-size:.65rem}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1>聚落、交通與中地 闖關</h1>
+    <p>一次一張卡。看完按「下一張」，答題會馬上告訴妳對錯。</p>
+  </header>
+  <nav class="map" id="map" aria-label="關卡"></nav>
+  <div class="bar" aria-hidden="true"><i id="bar"></i></div>
+  <section class="card" id="card" aria-live="polite"></section>
+  <div class="nav">
+    <button class="btn" id="prev" type="button">上一張</button>
+    <button class="btn go" id="next" type="button">下一張</button>
+  </div>
+</div>
+
+<script>
+const LEVELS = [
+{ name:"地點位置", cards:[
+  {t:"learn", h:"先記一句話", html:`<p class="big"><mark>地點</mark>看「腳下」，<mark>位置</mark>看「對外」。</p>
+   <div class="pair">
+    <div class="side a"><h3>地點</h3><p>這塊地<b>本身</b>有什麼？</p><p>地形、水源、礦產、土壤</p></div>
+    <div class="side b"><h3>位置</h3><p>這裡<b>跟別人</b>怎麼連？</p><p>交通、港口、離大城市多近</p></div>
+   </div>
+   <div class="tip">想像開一家飲料店：店面多大、有沒有水電是<b>地點</b>；在不在捷運站旁邊是<b>位置</b>。</div>`},
+  {t:"two", q:"水金九因為金礦興盛，礦挖完就沒落了。", a:0, why:"金礦是這塊地「本身」的資源，資源沒了就衰退，屬於地點。（第 2 題）"},
+  {t:"two", q:"淡水、三峽因為河道淤積、船進不來而沒落。", a:1, why:"河運是「對外交通」，船進不來就是和外界的連結斷了，屬於位置。"},
+  {t:"two", q:"越南增加臨海省分、蓋南北高鐵，讓各省更容易對外連結。", a:1, why:"題目寫「對外關係」「交通」，就是位置。（第 29 題，臨海發展寫：興建港口拓展海運貿易）"},
+]},
+{ name:"商閾商品圈", cards:[
+  {t:"learn", h:"兩個最容易搞混的詞", html:`
+   <div class="pair">
+    <div class="side a"><h3>商閾</h3><p>店要活下去，<b>最少</b>需要多少客人。</p><p>像「及格線」</p></div>
+    <div class="side b"><h3>商品圈</h3><p>客人<b>最遠</b>願意跑多遠來買。</p><p>像「客人能來的範圍」</p></div>
+   </div>
+   <p class="big">商品圈裡的客人 <mark>夠多、超過商閾</mark>，店才開得成。</p>
+   <div class="tip">記法：「閾」是門檻，跨過門檻才能進門營業。</div>`},
+  {t:"quiz", q:"捷運新莊線通車後，沿線開了很多新商店。哪個東西變了？", o:["商品圈擴大","商品圈縮小","商閾擴大","商閾縮小"], a:0, why:"捷運讓客人跑得更遠、更方便，「客人能來的範圍」變大＝商品圈擴大。商閾是店的及格線，跟交通無關。（第 8 題）"},
+  {t:"quiz", q:"手搖飲店在都市一直開、開很密。這代表什麼？", o:["商品圈小於商閾","商閾遠小於商品圈","都市沒有人喝飲料","商閾和商品圈一樣大"], a:1, why:"都市人很多，走沒幾步就湊滿「及格線」客人，所以商閾很小、商品圈相對大，店可以開很密。（第 6 題）"},
+  {t:"quiz", q:"如果一家店的商品圈「小於」商閾，會怎樣？", o:["生意很好","會虧錢倒閉","會升級成量販店","不會怎樣"], a:1, why:"能來的客人湊不到及格線，就會虧損。看到選項寫「商品圈小於商閾還能展店」，一定錯。"},
+]},
+{ name:"中地等級", cards:[
+  {t:"learn", h:"高級中地 vs 低級中地", html:`<p class="big">想成 <mark>大型量販店</mark> 跟 <mark>巷口便利商店</mark>。</p>
+   <div class="pair">
+    <div class="side a"><h3>高級（量販店）</h3><p>數量<b>少</b>、離很遠</p><p>商閾<b>大</b>、商品圈<b>大</b></p><p>高級、低級商品<b>都有</b></p><p>需要人口<b>多</b></p></div>
+    <div class="side b"><h3>低級（便利商店）</h3><p>數量<b>多</b>、到處都是</p><p>商閾<b>小</b>、商品圈<b>小</b></p><p>只有低級商品</p><p>人口少也能活</p></div>
+   </div>
+   <div class="tip">口訣：<b>等級越高，數量越少，什麼都大。</b></div>`},
+  {t:"two", L:["高級","低級"], q:"A 級中地全國只有 72 個，B 級有 327 個。A 級是？", a:0, why:"數量越少，等級越高。（第 5 題）"},
+  {t:"two", L:["高級","低級"], q:"這個中地「只提供大家都有的 8、9、10 號商品」。它是？", a:1, why:"大家都有的是低級商品，只賣低級商品的就是最低級中地，人口也最少。（第 4 題答丁）"},
+  {t:"quiz", q:"把學校當中地：大專院校比國小少很多。下面哪個對？", o:["大專等級最低","學生去大專平均要跑比較遠","國小服務的範圍最大","國小數量多所以等級最高"], a:1, why:"高級中地數量少、離得遠，所以去大學要跑比較遠。（第 11 題）"},
+  {t:"quiz", q:"甲縣市：國小不多，但高中 70 所、大專 24 所都是最多。甲最可能是？", o:["花蓮縣","桃園市","臺北市"], a:2, why:"高級學校特別多＝高級中地集中＝臺北市。國小最多的是人口多又分布廣的桃園；全部最少的是花蓮。（第 12 題）"},
+  {t:"quiz", q:"市場區域左上小而密、右下大而疏，不是漂亮的正六邊形。原因？", o:["每個市集賣的東西不同","人口密度或消費力不一樣","有些人買不到東西"], a:1, why:"人多的地方，小範圍就湊滿商閾，所以格子小；人少的地方要大範圍才夠。（第 10 題）"},
+]},
+{ name:"交通效應", cards:[
+  {t:"learn", h:"交通變快，會連鎖發生三件事", html:`
+   <div class="chain">
+    <div>① 時空收斂：距離沒變，<mark>時間變短</mark>，感覺變近</div><span>↓</span>
+    <div>② 商品圈擴大：客人能跑更遠來消費</div><span>↓</span>
+    <div>③ 空間重組：各地<mark>重新分工</mark>，誰做什麼換人了</div>
+   </div>
+   <div class="tip">分辨方法：題目只講「時間縮短」→ 時空收斂。題目講「某地變專業區／某地客人被搶走、要轉型」→ 空間重組。</div>`},
+  {t:"quiz", q:"蘇花改通車，宜蘭到花蓮時間縮短，臺北人可以兩天一夜玩花蓮。", o:["時空收斂","空間重組","中地理論","推拉理論"], a:0, why:"重點只是「時間變短」。（第 23 題）"},
+  {t:"quiz", q:"蘇花改通車後，宜蘭民宿客人變少，要重新找特色。", o:["時空收斂","空間重組","時空輻散"], a:1, why:"客人被花蓮分走，宜蘭得重新定位＝各地分工重新調整。（第 24 題）"},
+  {t:"quiz", q:"高速公路通車後，蔬菜不用種在都市旁，改集中在彰化、雲林形成專業區。", o:["交通革新","時空收斂","空間重組"], a:2, why:"出現「專業區」就是空間重組。（第 3 題）"},
+  {t:"quiz", q:"越南高鐵讓河內到胡志明市從 30 多小時變 5.5 小時，商家服務範圍會？", o:["擴大","縮小","不變"], a:0, why:"交通變快 → 商品圈擴大 → 新商家進駐。時間縮短這件事叫時空收斂。（第 30 題）"},
+  {t:"quiz", q:"機場捷運開通，對沿線居民生活最直接的影響是？", o:["臺北人口一定增加","桃園到臺北通勤變多，形成一日生活圈","政府賺很多錢"], a:1, why:"題目問「居民生活」，答案就找跟生活有關的：通勤、一日生活圈。（第 22 題）"},
+]},
+{ name:"運輸方式", cards:[
+  {t:"slider", h:"拉拉看：多遠用什麼最便宜？"},
+  {t:"learn", h:"線的起點＝場站成本", html:`<p class="big">圖上每條線的<mark>起點高度</mark>，是車站、港口、機場的固定花費。</p>
+   <p>鐵路起點比公路高，但線<b>爬得比較慢</b>，所以跑越遠越划算。</p>
+   <p>空運起點最高，最貴但最快。</p>
+   <div class="tip">另外記：國內最主要交通是<b>公路</b>；載貨量最大是<b>水運</b>；解決塞車靠<b>捷運</b>。（第 16 題）</div>`},
+  {t:"quiz", q:"臺北到高雄約 300 公里，只看運費，用什麼最划算？", o:["空運","公路","鐵路","水運"], a:2, why:"300 在 80～550 之間，是鐵路的範圍。（第 18 題）"},
+  {t:"quiz", q:"哪一句對？", o:["空運場站成本最低","鐵路場站成本比公路高，但比較適合長途","公路最適合長途","水運短途也最划算"], a:1, why:"起點高（場站成本高）、但爬得慢，所以適合長途。（第 19 題）"},
+  {t:"quiz", q:"宜蘭往花蓮的替代交通，每天能載 6 臺大客貨車、30 臺小客車、8 臺機車。要去哪轉乘？", o:["羅東火車站","國光客運宜蘭站","蘇澳港","冬山河遊客中心"], a:2, why:"能載汽車、機車的只有船，宜蘭的港口是蘇澳港。（第 27 題）"},
+]},
+{ name:"題型陷阱", cards:[
+  {t:"learn", h:"考卷上常見的陷阱", html:`
+   <div class="tip"><b>絕對字眼</b>：「沒有」「皆」「一定」「都」，通常是錯的。</div>
+   <div class="tip"><b>大小說反</b>：中地題最愛把高、低級的大小對調，用「量販店 vs 便利商店」檢查一次。</div>
+   <div class="tip"><b>首都</b>：越南首都是<b>河內</b>，不是胡志明市。</div>
+   <div class="tip"><b>轉運站</b>：選大站（新營、嘉義），因為中地等級高、設施多。</div>`},
+  {t:"quiz", q:"「都市居民多為工商業人員，沒有農業人口」這句話？", o:["對","錯，因為「沒有」太絕對"], a:1, why:"都市還是有少數農業人口。（第 1 題，答案是都市提供鄉村行政、醫療、金融服務）"},
+  {t:"quiz", q:"臺鐵斷線，接駁站選新營和嘉義，不選後壁、南靖。為什麼？", o:["後壁地形崎嶇","新營、嘉義中地等級較高，適合轉運","後壁太遠"], a:1, why:"大站人多、交通設施完善。（第 26 題）"},
+  {t:"quiz", q:"新胡志明市合併周邊的巴地頭頓省、平陽省，結果是？", o:["河內失去交通節點地位","合併衛星市鎮，中地等級提高","首都胡志明市更強"], a:1, why:"腹地變大、人口變多，能撐起更高級的服務。首都是河內。（第 28 題）"},
+  {t:"quiz", q:"北北基桃要用中地理論解釋，哪句最適合？", o:["北北基桃是均質平原","基隆被包在更高級的大臺北市場區域裡","桃園有機場所以最高級"], a:1, why:"最高級的是臺北，基隆靠交通連到臺北。北北基桃多山和盆地，不是平原。（第 17 題）"},
+]},
+];
+
+const KEY="geo-ch2-quest";
+let st={lv:0,i:0,done:{},ans:{}};
+try{const s=JSON.parse(localStorage.getItem(KEY)||"null"); if(s&&s.ans) st=s;}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
+
+const $=id=>document.getElementById(id);
+const card=$("card");
+const total=LEVELS.reduce((n,l)=>n+l.cards.length+1,0);
+
+function drawMap(){
+  $("map").innerHTML=LEVELS.map((l,k)=>`<button type="button" class="stop ${k===st.lv?"on":""} ${st.done[k]?"done":""}" data-k="${k}"><b>${k+1}</b>${l.name}</button>`).join("");
+  $("map").querySelectorAll(".stop").forEach(b=>b.onclick=()=>{st.lv=+b.dataset.k;st.i=0;render();});
+  let pos=0; for(let k=0;k<st.lv;k++) pos+=LEVELS[k].cards.length+1; pos+=st.i+1;
+  $("bar").style.width=(pos/total*100)+"%";
+}
+
+function quizHTML(c,key,labels){
+  const picked=st.ans[key];
+  const isTwo=c.t==="two";
+  const opts=isTwo?(c.L||["地點","位置"]):c.o;
+  let html=`<div class="tag">第 ${st.lv+1} 關・答題</div><h2>${c.q}</h2><div class="opts ${isTwo?"two":""}">`;
+  opts.forEach((o,j)=>{
+    let cls=isTwo?(j===0?"pa":"pb"):"";
+    if(picked!==undefined){ if(j===c.a) cls+=" right"; else if(j===picked) cls+=" wrong"; }
+    html+=`<button type="button" class="opt ${cls}" data-j="${j}" ${picked!==undefined?"disabled":""}>${o}</button>`;
+  });
+  html+="</div>";
+  if(picked!==undefined){
+    const ok=picked===c.a;
+    html+=`<div class="fb ${ok?"ok":"ng"}"><b class="${ok?"ok-t":"ng-t"}">${ok?"答對了！":"答案是「"+opts[c.a]+"」"}</b>${c.why}</div>`;
+  }
+  return html;
+}
+
+function sliderHTML(c){
+  return `<div class="tag">第 ${st.lv+1} 關・動手試</div><h2>${c.h}</h2>
+  <div class="slider"><div class="km"><span id="kmv">300</span> 公里</div>
+  <input type="range" id="km" min="0" max="900" step="10" value="300" aria-label="運輸距離（公里）">
+  <div class="modes"><div class="mode" id="m0"><b>公路</b>0～80</div><div class="mode" id="m1"><b>鐵路</b>80～550</div><div class="mode" id="m2"><b>水運</b>550 以上</div></div></div>
+  <div class="tip">口訣：<b>短程公路、中程鐵路、長程水運</b></div>`;
+}
+function bindSlider(){
+  const r=$("km"); const f=()=>{const v=+r.value;$("kmv").textContent=v;const w=v<80?0:v<550?1:2;[0,1,2].forEach(k=>$("m"+k).classList.toggle("win",k===w));};
+  r.oninput=f; f();
+}
+
+function endHTML(){
+  const L=LEVELS[st.lv]; let q=0,ok=0;
+  L.cards.forEach((c,j)=>{if(c.t==="quiz"||c.t==="two"){q++; if(st.ans[st.lv+"-"+j]===c.a) ok++;}});
+  st.done[st.lv]=true; save();
+  const last=st.lv===LEVELS.length-1;
+  return `<div class="tag">第 ${st.lv+1} 關完成</div><h2>${L.name}　過關！</h2>
+  <div class="score">${ok} / ${q}</div>
+  <p>${ok===q?"全對，這關穩了。":"錯的題目可以按「重玩這關」再試一次。"}</p>
+  <div class="nav"><button type="button" class="btn" id="redo">重玩這關</button></div>
+  <p class="small">${last?"六關全部完成！考前再從第 1 關快速刷一次。":"按「下一張」進入下一關。"}</p>`;
+}
+
+function render(){
+  const L=LEVELS[st.lv]; const n=L.cards.length;
+  if(st.i>=n){ card.innerHTML=endHTML(); $("redo").onclick=()=>{L.cards.forEach((c,j)=>delete st.ans[st.lv+"-"+j]);st.i=0;render();}; }
+  else{
+    const c=L.cards[st.i], key=st.lv+"-"+st.i;
+    if(c.t==="learn") card.innerHTML=`<div class="tag">第 ${st.lv+1} 關・觀念</div><h2>${c.h}</h2>${c.html}`;
+    else if(c.t==="slider"){ card.innerHTML=sliderHTML(c); bindSlider(); }
+    else{
+      card.innerHTML=quizHTML(c,key);
+      card.querySelectorAll(".opt:not([disabled])").forEach(b=>b.onclick=()=>{st.ans[key]=+b.dataset.j;save();render();});
+    }
+  }
+  const atEnd=st.i>=n, isQ=!atEnd&&["quiz","two"].includes(L.cards[st.i].t), unanswered=isQ&&st.ans[st.lv+"-"+st.i]===undefined;
+  $("next").disabled=unanswered||(atEnd&&st.lv===LEVELS.length-1);
+  $("next").textContent=unanswered?"先選一個答案":"下一張";
+  $("prev").disabled=st.lv===0&&st.i===0;
+  drawMap(); save();
+}
+$("next").onclick=()=>{const n=LEVELS[st.lv].cards.length; if(st.i<n) st.i++; else if(st.lv<LEVELS.length-1){st.lv++;st.i=0;} render(); window.scrollTo({top:0});};
+$("prev").onclick=()=>{ if(st.i>0) st.i--; else if(st.lv>0){st.lv--;st.i=LEVELS[st.lv].cards.length;} render(); };
+render();
+</script>
+</body>
+</html>
