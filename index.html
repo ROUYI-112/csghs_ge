@@ -30,7 +30,7 @@ header{display:flex;align-items:center;gap:16px}
 .eyebrow{font-family:var(--display);font-size:.8rem;letter-spacing:.3em;color:var(--accent)}
 header h1{font-family:var(--display);font-size:1.6rem;font-weight:900;margin:0;line-height:1.3;text-wrap:balance}
 header p{margin:0;color:var(--soft);font-size:.9rem}
-.map{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.map{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
 .stop{border:1.5px solid var(--line);background:var(--card);color:var(--soft);border-radius:10px;padding:6px 2px;font:inherit;font-size:.75rem;line-height:1.3;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0}
 .stop b{font-family:var(--display);font-size:1.1rem;color:var(--ink)}
 .stop.on{border-color:var(--accent-deep);background:var(--night);color:var(--hl)}
@@ -116,6 +116,12 @@ mark{background:var(--hl);color:var(--hl-ink);padding:0 4px;border-radius:4px;fo
 .rng label{font-weight:700}
 .rng input{width:100%;accent-color:var(--accent)}
 @media (max-width:420px){.models{grid-template-columns:1fr}.model svg{max-width:130px}}
+.kwbox{background:var(--bg);border:1px dashed var(--accent);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.kwlb{font-family:var(--display);font-size:.78rem;letter-spacing:.1em;color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips mark{font-size:.95rem}
+.kwbox.big .chips mark{font-size:1.1rem;padding:4px 10px}
+.kwto{font-weight:700;color:var(--accent-deep)}
 @keyframes rise{from{transform:translateY(10px) scale(.97)}to{transform:none}}
 @media (max-width:420px){.pair{grid-template-columns:1fr}.stop{font-size:.65rem}.portrait{width:88px}header h1{font-size:1.35rem}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
@@ -216,6 +222,7 @@ const LEVELS = [
   {t:"quiz", q:"新胡志明市合併周邊的巴地頭頓省、平陽省，結果是？", o:["河內失去交通節點地位","合併衛星市鎮，中地等級提高","首都胡志明市更強"], a:1, why:"腹地變大、人口變多，能撐起更高級的服務。首都是河內。（第 28 題）"},
   {t:"quiz", q:"北北基桃要用中地理論解釋，哪句最適合？", o:["北北基桃是均質平原","基隆被包在更高級的大臺北市場區域裡","桃園有機場所以最高級"], a:1, why:"最高級的是臺北，基隆靠交通連到臺北。北北基桃多山和盆地，不是平原。（第 17 題）"},
 ]},
+{"name": "關鍵字速配", "cards": [{"t": "learn", "h": "看到關鍵字，就想到概念", "html": "<p class=\"big\">考卷上的題目很長，但只要抓到<mark>幾個關鍵字</mark>，就知道要用哪個概念。</p><p>這一關只看關鍵字，選出它指向的概念。</p><div class=\"tip\">每題下面會標出是考卷第幾題，答錯可以回去對照詳解。</div>"}, {"t": "quiz", "g": 1, "n": 3, "q": "看到這些關鍵字，要想到？", "o": ["商品圈擴大", "區域重新分工＝空間重組", "商品圈擴大、時空收斂"], "a": 1, "why": "第 2 章第 3 題的題幹關鍵字。"}, {"t": "quiz", "g": 1, "n": 6, "q": "看到這些關鍵字，要想到？", "o": ["時空收斂", "高級中地間距大", "商閾遠小於商品圈"], "a": 2, "why": "第 2 章第 6 題的題幹關鍵字。"}, {"t": "quiz", "g": 1, "n": 8, "q": "看到這些關鍵字，要想到？", "o": ["時空收斂", "高級中地間距大", "商品圈擴大"], "a": 2, "why": "第 2 章第 8 題的題幹關鍵字。"}, {"t": "quiz", "g": 1, "n": 11, "q": "看到這些關鍵字，要想到？", "o": ["中地等級較高的轉運節點", "高級中地間距大", "空間重組"], "a": 1, "why": "第 2 章第 11 題的題幹關鍵字。"}, {"t": "quiz", "g": 1, "n": 18, "q": "看到這些關鍵字，要想到？", "o": ["80～550 公里＝鐵路", "空間重組", "商品圈擴大、時空收斂"], "a": 0, "why": "第 2 章第 18 題的題幹關鍵字。"}, {"t": "quiz", "g": 1, "n": 20, "q": "看到這些關鍵字，要想到？", "o": ["時空收斂", "中地", "區域重新分工＝空間重組"], "a": 1, "why": "第 2 章第 20 題的題幹關鍵字。"}, {"t": "quiz", "g": 1, "n": 23, "q": "看到這些關鍵字，要想到？", "o": ["中地", "時空收斂", "區域重新分工＝空間重組"], "a": 1, "why": "第 2 章第 23 題的題幹關鍵字。"}, {"t": "quiz", "g": 1, "n": 24, "q": "看到這些關鍵字，要想到？", "o": ["區域重新分工＝空間重組", "商閾遠小於商品圈", "空間重組"], "a": 2, "why": "第 2 章第 24 題的題幹關鍵字。"}, {"t": "quiz", "g": 1, "n": 26, "q": "看到這些關鍵字，要想到？", "o": ["中地等級較高的轉運節點", "位置", "商品圈擴大、時空收斂"], "a": 0, "why": "第 2 章第 26 題的題幹關鍵字。"}, {"t": "quiz", "g": 1, "n": 27, "q": "看到這些關鍵字，要想到？", "o": ["位置", "商閾遠小於商品圈", "能載車的船＝蘇澳港"], "a": 2, "why": "第 2 章第 27 題的題幹關鍵字。"}, {"t": "quiz", "g": 1, "n": 29, "q": "看到這些關鍵字，要想到？", "o": ["位置", "80～550 公里＝鐵路", "能載車的船＝蘇澳港"], "a": 0, "why": "第 2 章第 29 題的題幹關鍵字。"}, {"t": "quiz", "g": 1, "n": 30, "q": "看到這些關鍵字，要想到？", "o": ["商品圈擴大", "空間重組", "商品圈擴大、時空收斂"], "a": 2, "why": "第 2 章第 30 題的題幹關鍵字。"}]},
 { ch:3, name:"都市化", cards:[
   {t:"learn", h:"三個長得很像的詞", html:`
    <div class="tip"><b>都市化</b>：人<b>從鄉村搬進都市</b>，住在都市的人「比例」變高。</div>
@@ -331,9 +338,11 @@ const LEVELS = [
   {t:"two", L:["向量式","網格式"], q:"臺中市的行政區邊界，用哪種方式記錄？", a:0, why:"邊界是一條清楚的線，用座標記最精確。"},
   {t:"two", L:["向量式","網格式"], q:"臺中市各地的生理等效溫度，用哪種方式記錄？", a:1, why:"溫度是連續分布的現象，地圖上就是一格一格的深淺。"},
 ]},
+{"ch": 3, "name": "關鍵字速配", "cards": [{"t": "learn", "h": "看到關鍵字，就想到概念", "html": "<p class=\"big\">考卷上的題目很長，但只要抓到<mark>幾個關鍵字</mark>，就知道要用哪個概念。</p><p>這一關只看關鍵字，選出它指向的概念。</p><div class=\"tip\">每題下面會標出是考卷第幾題，答錯可以回去對照詳解。</div>"}, {"t": "quiz", "g": 1, "n": 1, "q": "看到這些關鍵字，要想到？", "o": ["土地利用分區管制", "住商混合", "人口移入＝都市化"], "a": 2, "why": "第 3 章第 1 題的題幹關鍵字。"}, {"t": "quiz", "g": 1, "n": 2, "q": "看到這些關鍵字，要想到？", "o": ["多核心", "市中心地價最高", "郊區化"], "a": 2, "why": "第 3 章第 2 題的題幹關鍵字。"}, {"t": "quiz", "g": 1, "n": 3, "q": "看到這些關鍵字，要想到？", "o": ["都市熱島效應", "市中心地價最高", "住商混合"], "a": 1, "why": "第 3 章第 3 題的題幹關鍵字。"}, {"t": "quiz", "g": 1, "n": 5, "q": "看到這些關鍵字，要想到？", "o": ["都市擴張", "都市熱島效應", "市中心地價最高"], "a": 0, "why": "第 3 章第 5 題的題幹關鍵字。"}, {"t": "quiz", "g": 1, "n": 9, "q": "看到這些關鍵字，要想到？", "o": ["多核心", "假性都市化", "鄉村推力＝假性都市化"], "a": 2, "why": "第 3 章第 9 題的題幹關鍵字。"}, {"t": "quiz", "g": 1, "n": 12, "q": "看到這些關鍵字，要想到？", "o": ["多核心", "都市擴張", "建蔽率低、容積率高"], "a": 0, "why": "第 3 章第 12 題的題幹關鍵字。"}, {"t": "quiz", "g": 1, "n": 17, "q": "看到這些關鍵字，要想到？", "o": ["假性都市化", "住商混合", "人口移入＝都市化"], "a": 1, "why": "第 3 章第 17 題的題幹關鍵字。"}, {"t": "quiz", "g": 1, "n": 20, "q": "看到這些關鍵字，要想到？", "o": ["土地利用分區管制", "郊區化", "建蔽率低、容積率高"], "a": 0, "why": "第 3 章第 20 題的題幹關鍵字。"}, {"t": "quiz", "g": 1, "n": 21, "q": "看到這些關鍵字，要想到？", "o": ["郊區化", "都市熱島效應", "第 2 名約 1/2＝等級大小法則"], "a": 2, "why": "第 3 章第 21 題的題幹關鍵字。"}, {"t": "quiz", "g": 1, "n": 23, "q": "看到這些關鍵字，要想到？", "o": ["住商混合", "假性都市化", "市中心地價最高"], "a": 1, "why": "第 3 章第 23 題的題幹關鍵字。"}, {"t": "quiz", "g": 1, "n": 26, "q": "看到這些關鍵字，要想到？", "o": ["建蔽率低、容積率高", "多核心", "鄉村推力＝假性都市化"], "a": 0, "why": "第 3 章第 26 題的題幹關鍵字。"}, {"t": "quiz", "g": 1, "n": 29, "q": "看到這些關鍵字，要想到？", "o": ["都市熱島效應", "多核心", "住商混合"], "a": 0, "why": "第 3 章第 29 題的題幹關鍵字。"}]},
 ];
 
-const KEY="geo-ch2-quest";
+const KW={"2": {"1": [["鄉村與都市差異", "行政、醫療、金融"], "都市的服務機能"], "2": [["地點條件", "資源枯竭", "產業聚落轉型觀光"], "地點＝當地資源（礦業）"], "3": [["高速公路通車後", "蔬果生產專業區"], "區域重新分工＝空間重組"], "4": [["4 個不同等級中地", "人口數量最少"], "商品種類最少＝等級最低"], "5": [["中地個數 72 vs 327", "中地等級"], "數量少＝等級高"], "6": [["每月新增 40 家", "人口密集", "持續展店"], "商閾遠小於商品圈"], "7": [["超市 vs 量販店", "中地理論"], "量販店等級較高"], "8": [["捷運通車後", "沿線增加新商店", "交通區位"], "商品圈擴大"], "9": [["鄉村與都市", "互動關係", "交通網路連結"], "城鄉互相依賴"], "10": [["同一等級的市集", "未呈現均勻分布"], "人口密度、消費力有差異"], "11": [["學校等級愈高", "數量愈少", "移動距離"], "高級中地間距大"], "12": [["各級學校分級特性及數量", "桃園、臺北、花蓮"], "高級學校最多＝臺北"], "13": [["鹽埕", "臨港鐵路", "1978 年「甲」通車"], "鹽田；甲＝中山高"], "14": [["臨港線", "改建為輕軌", "文化觀光"], "港邊市區、輕軌"], "15": [["擴張港口設施", "車站、鐵道、碼頭與倉庫"], "腹地擴大、中地等級提升"], "16": [["北北基桃", "交通運輸工具", "運輸特色"], "大眾運輸解決塞車"], "17": [["中地理論", "北北基桃聚落階層體系"], "基隆在大臺北市場區域內"], "18": [["臺北到高雄約 300 公里", "單純考慮運費與距離"], "80～550 公里＝鐵路"], "19": [["場站成本", "運費"], "起點高低＋上升快慢"], "20": [["三心", "航空城、桃園、中壢", "都心"], "中地"], "21": [["規劃捷運站點", "旅運發揮最大功能"], "節點連線與腹地"], "22": [["對沿線聚落及居民生活", "影響"], "通勤人數增加、一日生活圈"], "23": [["行車時間縮短", "以較短天數旅遊"], "時空收斂"], "24": [["宜蘭旅宿業者客源受影響", "重新定位主題與特色"], "空間重組"], "25": [["北迴線和縱貫線中斷", "運輸距離與運輸類型"], "都市間運輸"], "26": [["接駁站點選新營與嘉義", "而非後壁與南靖"], "中地等級較高的轉運節點"], "27": [["替代性交通工具", "大客貨車、小客車、機車", "宜蘭往花蓮"], "能載車的船＝蘇澳港"], "28": [["合併鄰近衛星市鎮", "人口規模、面積"], "腹地擴大、中地等級提高"], "29": [["臨海發展", "對外關係", "交通"], "位置"], "30": [["沿線都市帶動新商家進駐", "旅運時間縮短"], "商品圈擴大、時空收斂"]}, "3": {"1": [["遷移首都", "人口已超過 300 萬", "快速增長"], "人口移入＝都市化"], "2": [["沿都市主要道路向外延伸", "鄉村地區", "低密度"], "郊區化"], "3": [["愈接近市中心", "樓高愈高"], "市中心地價最高"], "4": [["2009 年和 2019 年人口", "都市化", "都市成長"], "都市成長率和全國比"], "5": [["由舊市區向七期、十四期、水湳延伸", "重劃區、購物商場"], "都市擴張"], "6": [["區位商數"], "某行業人口比例＝都市機能"], "7": [["建蔽率", "容積率"], "層數＝容積率÷建蔽率"], "8": [["建蔽率 90%→60%", "容積率 600%", "4 層樓"], "空地變多、可蓋 10 層"], "9": [["墨西哥市", "人口快速大量增加"], "鄉村推力＝假性都市化"], "10": [["6 都各行業區位商數", "最為正確"], "區位商數比的是比例"], "11": [["3 種都市結構", "根據哪一種指標"], "土地利用型態"], "12": [["面積太小", "將周圍鄉鎮納入都市範圍"], "多核心"], "13": [["智慧城市", "「無關」"], "應用資訊科技，不是生產"], "14": [["向智慧城市發展", "影響"], "能源效率、監測治理"], "15": [["又細又長", "占地面積愈大，可建層數愈少"], "建蔽率限制下用到最大容積率"], "16": [["超過 500 公尺摩天大樓", "多在亞洲"], "經濟崛起、彰顯競爭力"], "17": [["前店後住", "上住下店"], "住商混合"], "18": [["國土計畫法", "城鄉互動"], "資源與機能整合"], "19": [["富裕白人住北區", "黑人住南區西區", "A～D 級"], "往 D 級犯罪率升高"], "20": [["zoning", "保護住宅區不被工業區影響"], "土地利用分區管制"], "21": [["義大利前十大都市", "都市規模"], "第 2 名約 1/2＝等級大小法則"], "22": [["大數據、AI", "即時顯示擁擠狀況"], "智慧城市"], "23": [["農村長年衝突動亂", "大量湧入首都", "貧民窟"], "假性都市化"], "24": [["波哥大", "周邊大片貧民窟", "兩種土地利用模式"], "拉丁美洲模式"], "25": [["2030 年願景", "減少對石油產業的依賴", "38 萬個就業機會"], "都市機能多元"], "26": [["95% 面積留給大自然", "單位面積容納更多人口"], "建蔽率低、容積率高"], "27": [["數位科技和創新理念", "交通工具共享", "空間有效利用"], "智慧城市"], "28": [["行政邊界", "生理等效溫度", "向量式／網格式"], "邊界用向量、連續現象用網格"], "29": [["市中心夏季氣溫偏高", "愈晚愈悶", "綠地被開發"], "都市熱島效應"], "30": [["廊道周邊保留通風空隙", "調整建築開發強度"], "降低建蔽率"]}};
+const KEY="geo-quest-v2";
 let st={lv:0,i:0,done:{},ans:{}};
 try{const s=JSON.parse(localStorage.getItem(KEY)||"null"); if(s&&s.ans) st=s;}catch(e){}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
@@ -347,7 +356,7 @@ const CH={2:"聚落、交通與中地",3:"都市與城鄉關係"};
 function drawMap(){
   const ch=LEVELS[st.lv].ch||2;
   $("h1").textContent=CH[ch]; $("eyebrow").textContent="地理 第"+(ch===2?"二":"三")+"章";
-  $("chtabs").innerHTML=[2,3].map(c=>{const first=LEVELS.findIndex(l=>(l.ch||2)===c);const n=LEVELS.filter((l,k)=>(l.ch||2)===c&&st.done[k]).length;return `<button type="button" role="tab" aria-selected="${c===ch}" class="chtab ${c===ch?"on":""}" data-f="${first}">第 ${c} 章<small>${CH[c]}・${n}/6 關</small></button>`}).join("");
+  $("chtabs").innerHTML=[2,3].map(c=>{const first=LEVELS.findIndex(l=>(l.ch||2)===c);const n=LEVELS.filter((l,k)=>(l.ch||2)===c&&st.done[k]).length;return `<button type="button" role="tab" aria-selected="${c===ch}" class="chtab ${c===ch?"on":""}" data-f="${first}">第 ${c} 章<small>${CH[c]}・${n}/${LEVELS.filter(l=>(l.ch||2)===c).length} 關</small></button>`}).join("");
   $("chtabs").querySelectorAll(".chtab").forEach(b=>b.onclick=()=>{st.lv=+b.dataset.f;st.i=0;render();});
   $("map").innerHTML=LEVELS.map((l,k)=>(l.ch||2)!==ch?"":`<button type="button" class="stop ${k===st.lv?"on":""} ${st.done[k]?"done":""}" data-k="${k}"><b>${LEVELS.slice(0,k).filter(x=>(x.ch||2)===ch).length+1}</b>${l.name}</button>`).join("");
   $("map").querySelectorAll(".stop").forEach(b=>b.onclick=()=>{st.lv=+b.dataset.k;st.i=0;render();});
@@ -359,7 +368,14 @@ function quizHTML(c,key,labels){
   const picked=st.ans[key];
   const isTwo=c.t==="two";
   const opts=isTwo?(c.L||["地點","位置"]):c.o;
-  let html=`<div class="tag">第 ${lvNo()} 關・答題</div><h2>${c.q}</h2><div class="opts ${isTwo?"two":""}">`;
+  const ch=LEVELS[st.lv].ch||2;
+  let num=c.n; if(!num){const m=(c.why||"").match(/第 (\d+) 題/); if(m) num=+m[1];}
+  const kw=num&&KW[ch]&&KW[ch][num];
+  let html=`<div class="tag">第 ${lvNo()} 關・${c.g?"關鍵字速配":"答題"}</div>`;
+  if(kw&&!c.g) html+=`<div class="kwbox"><span class="kwlb">題幹關鍵字・第 ${num} 題</span><div class="chips">${kw[0].map(k=>`<mark>${k}</mark>`).join("")}</div>${picked!==undefined?`<div class="kwto">→ ${kw[1]}</div>`:""}</div>`;
+  html+=`<h2>${c.q}</h2>`;
+  if(kw&&c.g) html+=`<div class="kwbox big"><div class="chips">${kw[0].map(k=>`<mark>${k}</mark>`).join("")}</div></div>`;
+  html+=`<div class="opts ${isTwo?"two":""}">`;
   opts.forEach((o,j)=>{
     let cls=isTwo?(j===0?"pa":"pb"):"";
     if(picked!==undefined){ if(j===c.a) cls+=" right"; else if(j===picked) cls+=" wrong"; }
@@ -434,7 +450,7 @@ function endHTML(){
   <div class="score">${ok} / ${q}</div>
   <p>${ok===q?"全對，這關穩了。":"錯的題目可以按「重玩這關」再試一次。"}</p>
   <button type="button" class="btn" id="redo">重玩這關</button>
-  <p class="small">${last?"兩章十二關全部完成！考前再從第一關快速刷一次。":"按「下一張」進入下一關。"}</p></div>`;}
+  <p class="small">${last?"兩章十四關全部完成！考前再從第一關快速刷一次。":"按「下一張」進入下一關。"}</p></div>`;}
 
 function render(){
   const L=LEVELS[st.lv]; const n=L.cards.length;
